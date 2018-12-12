@@ -12,7 +12,7 @@ const MousePresence : any = {
      */
     onDisappear: (cb: () => void): () => void => {
         onDisappearCallbacks.push(cb);
-        return () => { MousePresence.unregisterCallback(cb) };
+        return (): void => { MousePresence.unregisterCallback(cb) };
     },
 
     /**
@@ -22,7 +22,7 @@ const MousePresence : any = {
      */
     onAppear: (cb: () => void): () => void => {
         onAppearCallbacks.push(cb);
-        return () => { MousePresence.unregisterCallback(cb) };
+        return (): void => { MousePresence.unregisterCallback(cb) };
     },
 
     /**
@@ -61,9 +61,7 @@ const MousePresence : any = {
      * Check if the mouse is present at time of calling
      * @Return {boolean} Whether the mouse is present
      */
-    isPresent: (): boolean => {
-        return cursorIsVisible;
-    },
+    isPresent: (): boolean => cursorIsVisible,
 
     /**
      * Add a keydown listener to the provided HTMLElement, which will trigger a dispatchDisappear
@@ -72,9 +70,9 @@ const MousePresence : any = {
      * @Return {() => void} A deregisterer for the listener that will be attached
      */
     dispatchDisappearOnKeydown: (el: HTMLElement): () => void => {
-        let listener = () => { MousePresence.dispatchDisappear() };
+        let listener = (): void => { MousePresence.dispatchDisappear() };
         el.addEventListener('keydown', listener);
-        return () => { el.removeEventListener('keydown', listener) };
+        return (): void => { el.removeEventListener('keydown', listener) };
     }
 };
 
