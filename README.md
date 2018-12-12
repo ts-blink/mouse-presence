@@ -16,7 +16,7 @@ Yarn: `yarn add mouse-presence`
 
 `cb`: A callback function that takes no arguments and returns nothing.
 
-returns: A reference to `cb`.
+returns: A deregisterer for `cb`.
 
 Registers a callback to be called whenever a mouse cursor disappearance is dispatched.
 
@@ -24,7 +24,7 @@ Registers a callback to be called whenever a mouse cursor disappearance is dispa
 
 `cb`: A callback function that takes no arguments and returns nothing.
 
-returns: A reference to `cb`.
+returns: A deregisterer for `cb`.
 
 Registers a callback to be called whenever the mouse is moved after a disappearance was dispatched.
 (Moving the mouse after the cursor disappeared will cause it to reappear.)
@@ -47,12 +47,23 @@ only do this once - subsequent calls will have no effect until the next onAppear
 It will also register a one-time mousemove listener on the document, which when triggered, will
 call all registered onAppear callbacks.
 
-## `MousePresence.isPresentNow()`
+## `MousePresence.isPresent()`
 
 returns: Boolean indicating whether the mouse cursor is present.
 
 Determine if the mouse cursor is present or not (according to the last reported
 appearance/disappearance event).
+
+## `MousePresence.dispatchDisappearOnKeydown(el)`
+
+`el`: The HTMLElement for which the keydown listener should be added to.
+
+returns: A deregisterer for the keydown listener that will be added.
+
+Adds a keydown listener to the provided HTMLElement, which will trigger a dispatchDisappear call
+when triggered (since typing will cause the mouse cursor to disappear). This is a convenience
+function for any text-based input elements, to be used instead of explicitly attaching a listener
+and calling dispatchDisappear yourself.
 
 
 # Examples
@@ -60,7 +71,7 @@ appearance/disappearance event).
 Component A:
 
 ```javascript
-let MousePresence = require("mouse-presence");
+import MousePresence from 'mouse-presence';
 
 // Gets called on every onDisappear event
 MousePresence.onDisappear(() => {
@@ -76,7 +87,7 @@ MousePresence.onAppear(() => {
 Component B:
 
 ```javascript
-let MousePresence = require("mouse-presence");
+import MousePresence from 'mouse-presence';
 
 // Only gets called for one onDisappear event, then unregisters itself
 let disappearCb = MousePresence.onDisappear(() => {
@@ -87,7 +98,7 @@ let disappearCb = MousePresence.onDisappear(() => {
 Component C:
 
 ```javascript
-let MousePresence = require("mouse-presence");
+import MousePresence from 'mouse-presence';
 
 // Mouse cursor disappears when typing
 this.element.addEventListener('keydown', () => {
